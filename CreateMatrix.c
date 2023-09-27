@@ -15,7 +15,6 @@ void createMatrix(int number, int rows, int columns) {
 
     char name[100] = "matrixes/matrix";
 
-    //char extension[20] = ".txt";
     char filename[100];
 
     sprintf(filename, "%s%d.txt", name, number);
@@ -29,10 +28,26 @@ void createMatrix(int number, int rows, int columns) {
         exit(1); // You may want to exit with a non-zero code to indicate an error
     } else {
         printf("The file is created successfully.\n");
-        fprintf(matrixFile, "%d ", 40);
-        fprintf(matrixFile, "%d\n", 43);
-        fprintf(matrixFile, "%d ", 63);
-        fprintf(matrixFile, "%d\n", 63);
+        fprintf(matrixFile, "%d %d\n", rows, columns);
+        for(int i=0; i < rows; i++)
+        {
+            for(int j=0; j<columns; j++)
+            {
+                int k = rand()%90 + 10;
+
+                if(j< columns - 1)
+                {
+                    fprintf(matrixFile, "%d ", k);
+                }
+                else
+                {
+                    fprintf(matrixFile, "%d\n", k);
+                }
+
+                
+
+            }
+        }
         printf("Creating matrix %d x %d\n", rows, columns);
         fclose(matrixFile); // Close the file when done
     }
