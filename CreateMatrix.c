@@ -13,7 +13,7 @@ void createMatrix(int number, int rows, int columns) {
 }  
 
 
-    char name[100] = "matrixes/matrix";
+    char name[100] = "matrix";
 
     char filename[100];
 

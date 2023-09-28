@@ -2,45 +2,54 @@
 #include <stdlib.h>
 #include <time.h>
 
-void readMatrix(int number, int x, int y, int ** matrix)
-{
 
-    FILE *file = fopen("matrix.txt", "r");
+struct Matrix {
+    int ** data;
+    int rows;
+    int columns;
+};
+
+struct Matrix readMatrix(char * filename)
+{
+    int rows, columns;
+
+    FILE *file = fopen(filename, "r");
     
     if (file == NULL) {
         printf("Failed to open the file.\n");
-        return 1; 
+        return;
     }
     
-    fscanf(file, "%d %d", &x, &y);
+    fscanf(file, "%d %d", &rows, &columns);
+
+    int mat[rows][columns];
+
+    struct  Matrix matrix;
+
+    matrix.data = mat;
+    matrix.rows = rows;
+    matrix.columns = columns;    
     
-    if (x <= 0 || y <= 0) {
+    if (rows <= 0 || columns <= 0) {
         printf("Invalid dimensions.\n");
         fclose(file);
-        return 1;
+        return;
     }
     
-    int **matrix = (int **)malloc(x * sizeof(int *));
-    for (int i = 0; i < x; i++) {
-        matrix[i] = (int *)malloc(y * sizeof(int));
-    }
-    
-    for (int i = 0; i < x; i++) {
-        for (int j = 0; j < y; j++) {
-            if (fscanf(file, "%d", &matrix[i][j]) != 1) {
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < columns; j++) {
+            if (fscanf(file, "%d", &matrix.data[i][j]) != 1) {
                 printf("Error reading matrix element at (%d, %d).\n", i, j);
                 fclose(file);
-                return 1;
+                return;
             }
         }
     }
     
-    for (int i = 0; i < x; i++) {
-        free(matrix[i]);
-    }
-    free(matrix);
 
     fclose(file);
+
+    return matrix;
 
 }
 
@@ -62,5 +71,25 @@ int matrix_multiply(int n1, int m1, int n2, int m2, int ** mat1, int ** mat2, in
 
 int main()
 {
+
+    int rows, columns;
+    char filename [100];
+
+    printf("Digite o nome do arquivo: \n");
+
+    scanf("%s", filename);
+
+    printf("nome: %s", filename);
+
+    struct Matrix matrix = readMatrix(filename);
+
+    for(int i=0; i<matrix.rows;i++)
+    {
+        for (int j = 0; j < matrix.columns; j++)
+        {
+            printf("%d", matrix.data[i][j]);
+        }
+        printf("\n");
+    }
 
 }
