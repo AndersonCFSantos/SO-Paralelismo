@@ -31,7 +31,6 @@ struct Matrix readMatrix(char *filename) {
         exit(1);
     }
 
-    // Allocate memory for the matrix
     struct Matrix matrix;
     matrix.rows = rows;
     matrix.columns = columns;
@@ -55,49 +54,72 @@ struct Matrix readMatrix(char *filename) {
     return matrix;
 }
 
-int matrix_multiply(int n1, int m1, int n2, int m2, int ** mat1, int ** mat2, int ** result) {
-    if (m1 != n2) {
+struct Matrix matrix_multiply(struct Matrix mat1, struct Matrix mat2) {
+    if (mat1.columns != mat2.rows) {
         printf("Matrix multiplication is not possible. Number of columns in the first matrix must be equal to the number of rows in the second matrix.\n");
-        return;
+        struct Matrix emptyMatrix = {NULL, 0, 0};
+        return emptyMatrix;
     }
 
-    for (int i = 0; i < n1; i++) {
-        for (int j = 0; j < m2; j++) {
-            result[i][j] = 0;
-            for (int k = 0; k < m1; k++) {
-                result[i][j] += mat1[i][k] * mat2[k][j];
+    struct Matrix result;
+    result.rows = mat1.rows;
+    result.columns = mat2.columns;
+
+    
+    result.data = (int **)malloc(result.rows * sizeof(int *));
+    for (int i = 0; i < result.rows; i++) {
+        result.data[i] = (int *)malloc(result.columns * sizeof(int));
+    }
+
+    for (int i = 0; i < mat1.rows; i++) {
+        for (int j = 0; j < mat2.columns; j++) {
+            result.data[i][j] = 0;
+            for (int k = 0; k < mat1.columns; k++) {
+                result.data[i][j] += mat1.data[i][k] * mat2.data[k][j];
             }
         }
     }
+
+    return result;
 }
 
 int main()
 {
 
     int rows, columns;
-    char filename [100];
+    char filename1 [100], filename2[100];
 
     printf("Digite o nome do arquivo: \n");
 
-    scanf("%s", filename);
+    scanf("%s", filename1);
+    scanf("%s", filename2);
 
-    printf("nome: %s", filename);
 
-    struct Matrix matrix = readMatrix(filename);
+    struct Matrix matrix1 = readMatrix(filename1);
+    struct Matrix matrix2 = readMatrix(filename2);
+    
 
-    for(int i=0; i<matrix.rows;i++)
+    struct Matrix multipliedMatrix = matrix_multiply(matrix1,matrix2);
+
+    for (int i = 0; i < matrix1.rows; i++) {
+        free(matrix1.data[i]);
+    }
+    free(matrix1.data);
+
+    for (int i = 0; i < matrix2.rows; i++) {
+        free(matrix2.data[i]);
+    }
+    free(matrix2.data);
+
+    for(int i=0; i<multipliedMatrix.rows;i++)
     {
-        for (int j = 0; j < matrix.columns; j++)
+        for (int j = 0; j < multipliedMatrix.columns; j++)
         {
-            printf("%d", matrix.data[i][j]);
+            printf("%d", multipliedMatrix.data[i][j]);
         }
         printf("\n");
     }
 
-    for (int i = 0; i < matrix.rows; i++) {
-        free(matrix.data[i]);
-    }
-    free(matrix.data);
 
     return 0;
 }
