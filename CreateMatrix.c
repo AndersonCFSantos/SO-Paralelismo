@@ -25,7 +25,7 @@ void createMatrix(int number, int rows, int columns) {
 
     if (matrixFile == NULL) {
         printf("The file is not opened. The program will exit now");
-        exit(1); // You may want to exit with a non-zero code to indicate an error
+        exit(1);
     } else {
         printf("The file is created successfully.\n");
         fprintf(matrixFile, "%d %d\n", rows, columns);
@@ -49,7 +49,7 @@ void createMatrix(int number, int rows, int columns) {
             }
         }
         printf("Creating matrix %d x %d\n", rows, columns);
-        fclose(matrixFile); // Close the file when done
+        fclose(matrixFile);
     }
 }
 
