@@ -54,7 +54,7 @@ struct Matrix readMatrix(char *filename) {
     return matrix;
 }
 
-struct Matrix matrix_multiply(struct Matrix mat1, struct Matrix mat2) {
+struct Matrix matrix_multiply(struct Matrix mat1, struct Matrix mat2, const char * foldername) {
     if (mat1.columns != mat2.rows) {
         printf("Matrix multiplication is not possible. Number of columns in the first matrix must be equal to the number of rows in the second matrix.\n");
         struct Matrix emptyMatrix = {NULL, 0, 0};
@@ -71,14 +71,42 @@ struct Matrix matrix_multiply(struct Matrix mat1, struct Matrix mat2) {
         result.data[i] = (int *)malloc(result.columns * sizeof(int));
     }
 
+    char outputFolder[100];
+    snprintf(outputFolder,sizeof(outputFolder),"%s", foldername);
+    mkdir(outputFolder, 0777);
+
+    char outputFilename[100];
+    snprintf(outputFilename, sizeof(outputFilename),"./%s/SequentialMultiplication.txt", foldername);
+
+    FILE * outputFile = fopen(outputFilename, "w");
+
+    fprintf(outputFile, "%d %d\n", result.rows, result.columns);
+
+    if(outputFile == NULL)
+    {
+        printf("Failed to open output file. Exiting\n");
+        exit(1);
+    }
+
+    clock_t start_time = clock();
+
     for (int i = 0; i < mat1.rows; i++) {
         for (int j = 0; j < mat2.columns; j++) {
             result.data[i][j] = 0;
             for (int k = 0; k < mat1.columns; k++) {
                 result.data[i][j] += mat1.data[i][k] * mat2.data[k][j];
             }
+            fprintf(outputFile,"c%d-%d = %d\n", i, j, result.data[i][j]);
         }
     }
+
+    clock_t end_time = clock();
+
+    double elapse_time = ((double)(end_time - start_time)) / CLOCKS_PER_SEC;
+
+    fprintf(outputFile,"%lf sec", elapse_time);
+
+    printf("DONE!\n");
 
     return result;
 }
@@ -99,7 +127,7 @@ int main()
     struct Matrix matrix2 = readMatrix(filename2);
     
 
-    struct Matrix multipliedMatrix = matrix_multiply(matrix1,matrix2);
+    struct Matrix multipliedMatrix = matrix_multiply(matrix1,matrix2, "SequentialResult");
 
     for (int i = 0; i < matrix1.rows; i++) {
         free(matrix1.data[i]);
@@ -111,14 +139,19 @@ int main()
     }
     free(matrix2.data);
 
-    for(int i=0; i<multipliedMatrix.rows;i++)
-    {
-        for (int j = 0; j < multipliedMatrix.columns; j++)
-        {
-            printf("%d", multipliedMatrix.data[i][j]);
-        }
-        printf("\n");
+    // for(int i=0; i<multipliedMatrix.rows;i++)
+    // {
+    //     for (int j = 0; j < multipliedMatrix.columns; j++)
+    //     {
+    //         printf("%d ", multipliedMatrix.data[i][j]);
+    //     }
+    //     printf("\n");
+    // }
+
+    for (int i = 0; i < multipliedMatrix.rows; i++) {
+        free(multipliedMatrix.data[i]);
     }
+    free(multipliedMatrix.data);
 
 
     return 0;
