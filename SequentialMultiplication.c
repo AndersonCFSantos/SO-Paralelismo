@@ -117,7 +117,7 @@ int main()
     int rows, columns;
     char filename1 [100], filename2[100];
 
-    printf("Digite o nome do arquivo: \n");
+    printf("Digite o nome dos dois arquivos: \n");
 
     scanf("%s", filename1);
     scanf("%s", filename2);

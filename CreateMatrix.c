@@ -69,11 +69,11 @@ int main()
 
     createMatrix(1, n1, m1);
 
-    printf("Insert dimensions of the first matrix: \n");
+    printf("Insert dimensions of the second matrix: \n");
 
     scanf("%d %d", &n2, &m2);
 
-    printf("Dimensions of first matrix: %d x %d\n", n2, m2);
+    printf("Dimensions of second matrix: %d x %d\n", n2, m2);
 
     createMatrix(2, n2, m2);
 
