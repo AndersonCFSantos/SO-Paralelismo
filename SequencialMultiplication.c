@@ -9,48 +9,50 @@ struct Matrix {
     int columns;
 };
 
-struct Matrix readMatrix(char * filename)
-{
+struct Matrix readMatrix(char *filename) {
     int rows, columns;
 
     FILE *file = fopen(filename, "r");
-    
+
     if (file == NULL) {
         printf("Failed to open the file.\n");
-        return;
+        exit(1);
     }
-    
-    fscanf(file, "%d %d", &rows, &columns);
 
-    int mat[rows][columns];
+    if (fscanf(file, "%d %d", &rows, &columns) != 2) {
+        printf("Error reading matrix dimensions.\n");
+        fclose(file);
+        exit(1);
+    }
 
-    struct  Matrix matrix;
-
-    matrix.data = mat;
-    matrix.rows = rows;
-    matrix.columns = columns;    
-    
     if (rows <= 0 || columns <= 0) {
         printf("Invalid dimensions.\n");
         fclose(file);
-        return;
+        exit(1);
     }
-    
+
+    // Allocate memory for the matrix
+    struct Matrix matrix;
+    matrix.rows = rows;
+    matrix.columns = columns;
+    matrix.data = (int **)malloc(rows * sizeof(int *));
+    for (int i = 0; i < rows; i++) {
+        matrix.data[i] = (int *)malloc(columns * sizeof(int));
+    }
+
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < columns; j++) {
             if (fscanf(file, "%d", &matrix.data[i][j]) != 1) {
                 printf("Error reading matrix element at (%d, %d).\n", i, j);
                 fclose(file);
-                return;
+                exit(1);
             }
         }
     }
-    
 
     fclose(file);
 
     return matrix;
-
 }
 
 int matrix_multiply(int n1, int m1, int n2, int m2, int ** mat1, int ** mat2, int ** result) {
@@ -92,4 +94,10 @@ int main()
         printf("\n");
     }
 
+    for (int i = 0; i < matrix.rows; i++) {
+        free(matrix.data[i]);
+    }
+    free(matrix.data);
+
+    return 0;
 }
