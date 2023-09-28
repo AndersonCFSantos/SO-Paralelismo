@@ -6,13 +6,6 @@
 void createMatrix(int number, int rows, int columns) {
     FILE *matrixFile;
 
-    int st;
-
-    if (stat("matrixes", &st) == -1) {
-    mkdir("matrixes", 0700);
-}  
-
-
     char name[100] = "matrix";
 
     char filename[100];

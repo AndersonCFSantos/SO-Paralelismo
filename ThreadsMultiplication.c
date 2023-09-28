@@ -52,10 +52,8 @@ void *multiply_part(void *arg) {
 
     clock_t end_time = clock();
 
-    double tElapse_time = ((double)(end_time - threadData->startTime )) / CLOCKS_PER_SEC;
     double elapse_time = ((double)(end_time - tStartTime )) / CLOCKS_PER_SEC;
-    fprintf(outputFile,"%lf sec\n", tElapse_time);
-    fprintf(outputFile,"%lf sec", elapse_time);
+    fprintf(outputFile,"%lf", elapse_time);
 
     fclose(outputFile);
     //fclose(timeOutputFile);
