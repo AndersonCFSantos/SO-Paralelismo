@@ -53,10 +53,9 @@ void *multiply_part(void *arg) {
     clock_t end_time = clock();
 
     double elapse_time = ((double)(end_time - tStartTime )) / CLOCKS_PER_SEC;
-    fprintf(outputFile,"%lf", elapse_time);
+    fprintf(outputFile,"%lf", elapse_time);    
 
     fclose(outputFile);
-    //fclose(timeOutputFile);
 
     pthread_exit(NULL);
 }
@@ -83,16 +82,6 @@ struct Matrix matrixThreadMultiply(struct Matrix mat1, struct Matrix mat2, int n
     snprintf(outputFolder, sizeof(outputFolder), "./%s", folderName); 
     mkdir(outputFolder, 0777);
 
-    
-    char outputFilename[100]; 
-    snprintf(outputFilename, sizeof(outputFilename), "./%s/tempoTotal.txt", folderName); // Relative path to the file
-    FILE *outputFile = fopen(outputFilename, "w");
-    if (outputFile == NULL) {
-        printf("Failed to open the output file.\n");
-        exit(1); 
-    }
-
-    //fprintf(outputFile, "Result Matrix Dimension: %d x %d\n", result.rows, result.columns);
 
     
     clock_t start_time = clock();
@@ -122,13 +111,6 @@ struct Matrix matrixThreadMultiply(struct Matrix mat1, struct Matrix mat2, int n
     for (int i = 0; i < numThreads; i++) {
         pthread_join(threads[i], NULL);
     }
-
-    clock_t end_time = clock();
-    double elapsed_time = ((double)(end_time - start_time)) / CLOCKS_PER_SEC;
-
-
-    // Close the output file
-    fclose(outputFile);
 
     printf("DONE!");
 
@@ -199,18 +181,7 @@ int main() {
     // Specify the number of threads
     int numThreads = matrix1.rows*matrix2.columns/((matrix1.rows*matrix2.columns)/p);
 
-    // Perform matrix multiplication using multiple threads and store dimension and time in a file in a specified folder
     struct Matrix result = matrixThreadMultiply(matrix1, matrix2, numThreads, "ThreadsResult");
-
-    // Display the result matrix
-    // if (result.data != NULL) {
-    //     for (int i = 0; i < result.rows; i++) {
-    //         for (int j = 0; j < result.columns; j++) {
-    //             printf("%d ", result.data[i][j]);
-    //         }
-    //         printf("\n");
-    //     }
-    // }
 
     // Free memory for the matrices and result
     for (int i = 0; i < matrix1.rows; i++) {

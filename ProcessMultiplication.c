@@ -22,7 +22,7 @@ struct ProcessData {
     char * folderName;
 };
 
-// Function to perform matrix multiplication for a part of the matrices
+
 void multiply_part(struct ProcessData *processData) {
 
     char outputFilename[100];
@@ -50,7 +50,6 @@ void multiply_part(struct ProcessData *processData) {
     fclose(outputFile);
 }
 
-// Function to perform matrix multiplication using processes
 struct Matrix matrix_multiply_processes(struct Matrix matrix1, struct Matrix matrix2, int numProcesses, char *folderName) {
     if (matrix1.columns != matrix2.rows) {
         printf("Matrix multiplication is not possible. Number of columns in the first matrix must be equal to the number of rows in the second matrix.\n");
@@ -71,19 +70,10 @@ struct Matrix matrix_multiply_processes(struct Matrix matrix1, struct Matrix mat
     snprintf(outputFolder, sizeof(outputFolder), "./%s", folderName);
     mkdir(outputFolder, 0777);
 
-    // char outputFilename[100];
-    // snprintf(outputFilename, sizeof(outputFilename), "./%s/output.txt", folderName);
-    // FILE *outputFile = fopen(outputFilename, "w");
-    // if (outputFile == NULL) {
-    //     printf("Failed to open the output file.\n");
-    //     exit(1);
-    // }
-
-    // fprintf(outputFile, "Result Matrix Dimension: %d x %d\n", result.rows, result.columns);
+    
 
     clock_t start_time = clock();
 
-    // Calculate rows per process and remaining rows
     int rowsPerProcess = result.rows / numProcesses;
     int remainingRows = result.rows % numProcesses;
 
@@ -103,19 +93,9 @@ struct Matrix matrix_multiply_processes(struct Matrix matrix1, struct Matrix mat
             processData.number = i+1;
             processData.folderName = folderName;
 
-            // Perform matrix multiplication for the part assigned to this process
+
             multiply_part(&processData);
 
-            // // Write the results to the output file (each process opens the file separately)
-            // fprintf(outputFile, "Process %d Result:\n", i);
-            // for (int j = processData.startRow; j < processData.endRow; j++) {
-            //     for (int k = 0; k < processData.result.columns; k++) {
-            //         fprintf(outputFile, "%d ", processData.result.data[j][k]);
-            //     }
-            //     fprintf(outputFile, "\n");
-            // }
-
-            // fclose(outputFile);
             exit(0);
         } else if (pid < 0) {
             printf("Failed to create a child process.\n");
@@ -128,12 +108,6 @@ struct Matrix matrix_multiply_processes(struct Matrix matrix1, struct Matrix mat
     for (int i = 0; i < numProcesses; i++) {
         wait(&status);
     }
-
-    // clock_t end_time = clock();
-    // double elapsed_time = ((double)(end_time - start_time)) / CLOCKS_PER_SEC;
-    // fprintf(outputFile, "Time Taken for Calculation: %lf seconds\n", elapsed_time);
-
-    // fclose(outputFile);
 
     printf("DONE!");
 
@@ -185,6 +159,8 @@ struct Matrix readMatrix(char *filename) {
     return matrix;
 }
 
+
+
 int main() {
     char filename1 [100], filename2[100];
     int p;
@@ -202,18 +178,9 @@ int main() {
 
     int numProcesses = matrix1.rows*matrix2.columns/((matrix1.rows*matrix2.columns)/p);
 
-    // Perform matrix multiplication using multiple processes and store dimension and time in a file in a specified folder
+
     struct Matrix result = matrix_multiply_processes(matrix1, matrix2, numProcesses, "ProcessesResults");
 
-    // Display the result matrix
-    // if (result.data != NULL) {
-    //     for (int i = 0; i < result.rows; i++) {
-    //         for (int j = 0; j < result.columns; j++) {
-    //             printf("%d ", result.data[i][j]);
-    //         }
-    //         printf("\n");
-    //     }
-    // }
 
     // Free memory for the matrices and result
     for (int i = 0; i < matrix1.rows; i++) {
